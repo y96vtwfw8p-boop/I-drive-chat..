@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>i drive chat</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#07100d;color:#fff}
+button,input{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+
+.auth{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px
+}
+.authbox{
+  width:100%;
+  max-width:400px;
+  background:#0d1b16;
+  border:1px solid #18382b;
+  border-radius:20px;
+  padding:25px;
+  box-shadow:0 15px 50px #0008
+}
+.logo{
+  text-align:center;
+  font-size:30px;
+  font-weight:800;
+  color:#54d28c;
+  margin-bottom:25px
+}
+.authbox h2{text-align:center;margin-top:0}
+
+input{
+  width:100%;
+  padding:13px;
+  margin:7px 0;
+  border-radius:12px;
+  border:1px solid #254638;
+  background:#08130f;
+  color:white;
+  outline:none
+}
+input:focus{border-color:#42c981}
+
+.primary{
+  width:100%;
+  padding:13px;
+  margin-top:8px;
+  border:0;
+  border-radius:12px;
+  background:#32b970;
+  color:white;
+  font-weight:bold
+}
+.secondary{
+  width:100%;
+  padding:11px;
+  margin-top:8px;
+  border:1px solid #315545;
+  border-radius:12px;
+  background:#10241c;
+  color:white
+}
+.warning{
+  margin-top:15px;
+  padding:11px;
+  border-radius:10px;
+  background:#332c16;
+  color:#ffd968;
+  font-size:13px
+}
+.error{
+  color:#ff7777;
+  font-size:13px;
+  margin-top:8px
+}
+
+.app{
+  height:100vh;
+  display:flex;
+  overflow:hidden
+}
+.sidebar{
+  width:330px;
+  background:#0b1813;
+  border-right:1px solid #183127;
+  display:flex;
+  flex-direction:column
+}
+.top{
+  padding:18px;
+  border-bottom:1px solid #183127
+}
+.brand{
+  font-size:23px;
+  font-weight:bold;
+  color:#55d68f;
+  margin-bottom:14px
+}
+.contacts{
+  flex:1;
+  overflow:auto
+}
+.contact{
+  padding:13px 16px;
+  border-bottom:1px solid #12251d;
+  cursor:pointer
+}
+.contact:hover{background:#10251c}
+.contactName{font-weight:bold}
+.contactUser{
+  color:#82988d;
+  font-size:13px;
+  margin-top:3px
+}
+.verify{color:#53d98d}
+
+.searchResult{
+  margin-top:8px;
+  background:#11271e;
+  border:1px solid #244d3a;
+  border-radius:12px;
+  padding:12px;
+  cursor:pointer
+}
+
+.sidebottom{
+  border-top:1px solid #183127;
+  padding:12px
+}
+.sidebtn{
+  width:100%;
+  border:0;
+  background:#10241c;
+  color:white;
+  padding:11px;
+  border-radius:10px;
+  margin-top:7px
+}
+
+.chat{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  min-width:0
+}
+.chatHead{
+  height:68px;
+  border-bottom:1px solid #183127;
+  display:flex;
+  align-items:center;
+  padding:0 20px;
+  background:#0b1813
+}
+.chatTitle{font-weight:bold}
+.chatMessages{
+  flex:1;
+  overflow:auto;
+  padding:20px
+}
+.empty{
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#61786d;
+  text-align:center
+}
+.message{
+  max-width:75%;
+  padding:10px 13px;
+  border-radius:14px;
+  margin:7px 0;
+  line-height:1.35
+}
+.mine{
+  margin-left:auto;
+  background:#17643e
+}
+.theirs{
+  margin-right:auto;
+  background:#162a21
+}
+.messageTime{
+  display:block;
+  font-size:10px;
+  opacity:.6;
+  margin-top:4px
+}
+.composer{
+  padding:12px;
+  border-top:1px solid #183127;
+  display:flex;
+  gap:8px;
+  background:#0b1813
+}
+.composer input{margin:0}
+.send{
+  width:80px;
+  border:0;
+  border-radius:12px;
+  background:#32b970;
+  color:white
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:#0009;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:10
+}
+.modalbox{
+  width:100%;
+  max-width:430px;
+  max-height:90vh;
+  overflow:auto;
+  background:#0d1b16;
+  border:1px solid #244536;
+  border-radius:18px;
+  padding:20px
+}
+.modalbox h2{margin-top:0}
+
+.adminUser{
+  padding:12px;
+  background:#12271e;
+  border-radius:10px;
+  margin-top:8px
+}
+.adminActions{
+  display:flex;
+  gap:7px;
+  margin-top:8px
+}
+.adminActions button{
+  flex:1;
+  padding:9px;
+  border:0;
+  border-radius:8px
+}
+.green{background:#32b970;color:white}
+.red{background:#9e3434;color:white}
+
+@media(max-width:700px){
+  .sidebar{width:100%}
+  .chat{display:none}
+  .chat.mobile-open{
+    display:flex;
+    width:100%
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="auth" class="auth">
+<div class="authbox">
+
+<div class="logo">i drive chat</div>
+
+<div id="loginForm">
+
+<h2>Вход</h2>
+
+<input
+id="loginUsername"
+placeholder="@username"
+autocomplete="username"
+>
+
+<input
+id="loginPassword"
+type="password"
+placeholder="Пароль"
+autocomplete="current-password"
+>
+
+<button class="primary" id="loginBtn">
+Войти
+</button>
+
+<button class="secondary" id="showRegister">
+Создать аккаунт
+</button>
+
+<div class="warning">
+⚠️ Сайт может часто выкидывать из аккаунта — запоминайте свои пароли.
+</div>
+
+<div id="loginError" class="error"></div>
+
+</div>
+
+
+<div id="registerForm" class="hidden">
+
+<h2>Регистрация</h2>
+
+<input
+id="regUsername"
+placeholder="@username"
+autocomplete="username"
+>
+
+<input
+id="regDisplayName"
+placeholder="Отображаемое имя"
+>
+
+<input
+id="regPassword"
+type="password"
+placeholder="Пароль"
+autocomplete="new-password"
+>
+
+<button class="primary" id="registerBtn">
+Зарегистрироваться
+</button>
+
+<button class="secondary" id="showLogin">
+Назад
+</button>
+
+<div id="registerError" class="error"></div>
+
+</div>
+
+</div>
+</div>
+
+
+<div id="app" class="app hidden">
+
+<aside class="sidebar" id="sidebar">
+
+<div class="top">
+
+<div class="brand">
+i drive chat
+</div>
+
+<input
+id="searchInput"
+placeholder="Поиск по @username"
+>
+
+<div id="searchResult"></div>
+
+</div>
+
+
+<div id="contacts" class="contacts">
+
+<div class="empty">
+Здесь пока нет чатов.
+</div>
+
+</div>
+
+
+<div class="sidebottom">
+
+<button
+class="sidebtn"
+id="profileBtn"
+>
+👤 Профиль
+</button>
+
+<button
+class="sidebtn hidden"
+id="adminBtn"
+>
+⚙️ Админ-панель
+</button>
+
+<button
+class="sidebtn"
+id="logoutBtn"
+>
+Выйти
+</button>
+
+</div>
+
+</aside>
+
+
+<main class="chat" id="chat">
+
+<div class="chatHead">
+
+<div id="chatTitle">
+Выберите пользователя
+</div>
+
+</div>
+
+
+<div id="messages" class="chatMessages">
+
+<div class="empty">
+
+Найдите пользователя по @username,<br>
+чтобы начать общение.
+
+</div>
+
+</div>
+
+
+<div
+class="composer hidden"
+id="composer"
+>
+
+<input
+id="messageInput"
+placeholder="Написать сообщение..."
+>
+
+<button
+class="send"
+id="sendBtn"
+>
+➤
+</button>
+
+</div>
+
+</main>
+
+</div>
+
+
+<!-- PROFILE -->
+
+<div
+id="profileModal"
+class="modal hidden"
+>
+
+<div class="modalbox">
+
+<h2>Профиль</h2>
+
+<div id="profileInfo"></div>
+
+<input
+id="displayNameInput"
+placeholder="Отображаемое имя"
+>
+
+<button
+class="primary"
+id="saveProfileBtn"
+>
+Сохранить
+</button>
+
+<button
+class="secondary"
+id="closeProfileBtn"
+>
+Закрыть
+</button>
+
+<button
+class="secondary"
+id="changePasswordBtn"
+>
+Изменить пароль
+</button>
+
+<div
+id="profileError"
+class="error"
+></div>
+
+</div>
+
+</div>
+
+
+<!-- ADMIN -->
+
+<div
+id="adminModal"
+class="modal hidden"
+>
+
+<div class="modalbox">
+
+<h2>Админ-панель</h2>
+
+<input
+id="adminSearch"
+placeholder="@username пользователя"
+>
+
+<button
+class="primary"
+id="adminSearchBtn"
+>
+Найти
+</button>
+
+<div id="adminResult"></div>
+
+<button
+class="secondary"
+id="closeAdminBtn"
+>
+Закрыть
+</button>
+
+</div>
+
+</div>
+
+
+<script type="module">
+
+import {
+initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+
+import {
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+onAuthStateChanged,
+signOut,
+setPersistence,
+browserLocalPersistence,
+updatePassword
+}
+from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+
+import {
+getDatabase,
+ref,
+get,
+update,
+push,
+onValue
+}
+from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+
+const firebaseConfig = {
+
+apiKey:
+"AIzaSyAoAUsGJl4ubZ3biN2lUdfB4_2rpIdR3bU",
+
+authDomain:
+"i-drive-chat-36c5c.firebaseapp.com",
+
+projectId:
+"i-drive-chat-36c5c",
+
+storageBucket:
+"i-drive-chat-36c5c.firebasestorage.app",
+
+messagingSenderId:
+"166609002779",
+
+appId:
+"1:166609002779:web:91651362e588ff3b09f3be",
+
+measurementId:
+"G-QBVLL2BKW8"
+
+};
+
+
+const app =
+initializeApp(firebaseConfig);
+
+const auth =
+getAuth(app);
+
+const db =
+getDatabase(app);
+
+
+await setPersistence(
+auth,
+browserLocalPersistence
+);
+
+
+let currentUser = null;
+
+let currentProfile = null;
+
+let currentChatUser = null;
+
+let stopMessages = null;
+
+
+const $ =
+id =>
+document.getElementById(id);
+
+
+function cleanUsername(value){
+
+return value
+.trim()
+.replace(/^@/,"")
+.toLowerCase()
+.replace(/[^a-z0-9_.-]/g,"");
+
+}
+
+
+function email(username){
+
+return cleanUsername(username)
++
+"@idrivechat.local";
+
+}
+
+
+function chatKey(a,b){
+
+return [a,b].sort().join("_");
+
+}
+
+
+function escapeHtml(str){
+
+return String(str)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+
+}
+
+
+function isAdmin(profile){
+
+return profile &&
+profile.username === "admin-user";
+
+}
+
+
+function showAuth(){
+
+$("auth").classList.remove("hidden");
+
+$("app").classList.add("hidden");
+
+}
+
+
+function showApp(){
+
+$("auth").classList.add("hidden");
+
+$("app").classList.remove("hidden");
+
+}
+
+
+/* REGISTER */
+
+$("showRegister").onclick = () => {
+
+$("loginForm").classList.add("hidden");
+
+$("registerForm").classList.remove("hidden");
+
+};
+
+
+$("showLogin").onclick = () => {
+
+$("registerForm").classList.add("hidden");
+
+$("loginForm").classList.remove("hidden");
+
+};
+
+
+$("registerBtn").onclick = async () => {
+
+const username =
+cleanUsername(
+$("regUsername").value
+);
+
+const displayName =
+$("regDisplayName").value.trim();
+
+const password =
+$("regPassword").value;
+
+$("registerError").textContent = "";
+
+
+if(username.length < 3){
+
+$("registerError").textContent =
+"Username должен содержать минимум 3 символа.";
+
+return;
+
+}
+
+
+if(password.length < 6){
+
+$("registerError").textContent =
+"Пароль должен содержать минимум 6 символов.";
+
+return;
+
+}
+
+
+if(!displayName){
+
+$("registerError").textContent =
+"Введите отображаемое имя.";
+
+return;
+
+}
+
+
+try{
+
+const existing =
+await get(
+ref(db,"usernames/"+username)
+);
+
+
+if(existing.exists()){
+
+$("registerError").textContent =
+"Этот username уже занят.";
+
+return;
+
+}
+
+
+const cred =
+await createUserWithEmailAndPassword(
+auth,
+email(username),
+password
+);
+
+
+const uid =
+cred.user.uid;
+
+
+const isNewAdmin =
+username === "admin-user";
+
+
+const profile = {
+
+uid,
+
+username,
+
+displayName,
+
+verified:isNewAdmin,
+
+banned:false,
+
+createdAt:Date.now()
+
+};
+
+
+const updates = {};
+
+
+updates[
+"profiles/"+uid
+] = profile;
+
+
+updates[
+"publicProfiles/"+uid
+] = {
+
+uid,
+
+username,
+
+displayName,
+
+verified:isNewAdmin
+
+};
+
+
+updates[
+"usernames/"+username
+] = uid;
+
+
+await update(
+ref(db),
+updates
+);
+
+
+}catch(e){
+
+$("registerError").textContent =
+e.message ||
+"Ошибка регистрации.";
+
+}
+
+};
+
+
+/* LOGIN */
+
+$("loginBtn").onclick = async () => {
+
+const username =
+cleanUsername(
+$("loginUsername").value
+);
+
+const password =
+$("loginPassword").value;
+
+$("loginError").textContent = "";
+
+
+try{
+
+await signInWithEmailAndPassword(
+auth,
+email(username),
+password
+);
+
+
+}catch(e){
+
+$("loginError").textContent =
+"Неверный username или пароль.";
+
+}
+
+};
+
+
+/* AUTH */
+
+onAuthStateChanged(
+auth,
+async user => {
+
+if(!user){
+
+currentUser = null;
+
+currentProfile = null;
+
+showAuth();
+
+return;
+
+}
+
+
+try{
+
+currentUser = user;
+
+
+const snap =
+await get(
+ref(db,"profiles/"+user.uid)
+);
+
+
+if(!snap.exists()){
+
+await signOut(auth);
+
+return;
+
+}
+
+
+currentProfile =
+snap.val();
+
+
+if(currentProfile.banned){
+
+alert(
+"Этот аккаунт заблокирован."
+);
+
+await signOut(auth);
+
+return;
+
+}
+
+
+showApp();
+
+
+$("adminBtn").classList.toggle(
+"hidden",
+!isAdmin(currentProfile)
+);
+
+
+loadContacts();
+
+
+}catch(e){
+
+await signOut(auth);
+
+}
+
+});
+
+
+/* CONTACTS */
+
+function loadContacts(){
+
+onValue(
+
+ref(
+db,
+"contacts/"+currentUser.uid
+),
+
+async snap => {
+
+const container =
+$("contacts");
+
+container.innerHTML = "";
+
+
+if(!snap.exists()){
+
+container.innerHTML =
+'<div class="empty">Здесь пока нет чатов.</div>';
+
+return;
+
+}
+
+
+const contacts =
+snap.val();
+
+
+for(
+const otherUid
+of Object.keys(contacts)
+){
+
+const p =
+await get(
+ref(
+db,
+"publicProfiles/"+otherUid
+)
+);
+
+
+if(!p.exists()) continue;
+
+
+const profile =
+p.val();
+
+
+const el =
+document.createElement("div");
+
+
+el.className =
+"contact";
+
+
+el.innerHTML = `
+
+<div class="contactName">
+
+${escapeHtml(profile.displayName)}
+
+${profile.verified
+? '<span class="verify"> ☑️</span>'
+: ''}
+
+</div>
+
+<div class="contactUser">
+
+@${escapeHtml(profile.username)}
+
+</div>
+
+`;
+
+
+el.onclick =
+() =>
+openChat(profile);
+
+
+container.appendChild(el);
+
+}
+
+}
+
+);
+
+}
+
+
+/* SEARCH */
+
+let searchTimer;
+
+
+$("searchInput")
+.addEventListener(
+"input",
+() => {
+
+clearTimeout(searchTimer);
+
+searchTimer =
+setTimeout(
+searchUser,
+300
+);
+
+}
+);
+
+
+async function searchUser(){
+
+const username =
+cleanUsername(
+$("searchInput").value
+);
+
+
+const result =
+$("searchResult");
+
+
+result.innerHTML = "";
+
+
+if(username.length < 3)
+return;
+
+
+const uidSnap =
+await get(
+ref(
+db,
+"usernames/"+username
+)
+);
+
+
+if(!uidSnap.exists()){
+
+result.innerHTML =
+'<div class="searchResult">Пользователь не найден</div>';
+
+return;
+
+}
+
+
+const uid =
+uidSnap.val();
+
+
+if(uid === currentUser.uid){
+
+result.innerHTML =
+'<div class="searchResult">Это ваш аккаунт.</div>';
+
+return;
+
+}
+
+
+const profileSnap =
+await get(
+ref(
+db,
+"publicProfiles/"+uid
+)
+);
+
+
+if(!profileSnap.exists())
+return;
+
+
+const profile =
+profileSnap.val();
+
+
+result.innerHTML = `
+
+<div class="searchResult">
+
+<b>
+${escapeHtml(profile.displayName)}
+</b>
+
+${profile.verified
+? '<span class="verify"> ☑️</span>'
+: ''}
+
+<br>
+
+<small>
+@${escapeHtml(profile.username)}
+</small>
+
+</div>
+
+`;
+
+
+result.firstElementChild.onclick =
+() => {
+
+openChat(profile);
+
+result.innerHTML = "";
+
+$("searchInput").value = "";
+
+};
+
+}
+
+
+/* CHAT */
+
+function openChat(profile){
+
+currentChatUser =
+profile;
+
+
+$("chatTitle").innerHTML = `
+
+${escapeHtml(profile.displayName)}
+
+${profile.verified
+? '<span class="verify"> ☑️</span>'
+: ''}
+
+`;
+
+
+$("composer")
+.classList
+.remove("hidden");
+
+
+if(window.innerWidth <= 700){
+
+$("sidebar")
+.classList
+.add("hidden");
+
+$("chat")
+.classList
+.add("mobile-open");
+
+}
+
+
+if(stopMessages){
+
+stopMessages();
+
+stopMessages = null;
+
+}
+
+
+const path =
+"messages/" +
+chatKey(
+currentUser.uid,
+profile.uid
+);
+
+
+stopMessages =
+onValue(
+
+ref(db,path),
+
+snap => {
+
+const messages =
+$("messages");
+
+messages.innerHTML = "";
+
+
+if(!snap.exists()){
+
+messages.innerHTML =
+'<div class="empty">Начните разговор 👋</div>';
+
+return;
+
+}
+
+
+const list =
+Object.values(
+snap.val()
+)
+.sort(
+(a,b) =>
+a.createdAt -
+b.createdAt
+);
+
+
+list.forEach(m => {
+
+const div =
+document.createElement("div");
+
+
+div.className =
+"message " +
+(
+m.senderId === currentUser.uid
+? "mine"
+: "theirs"
+);
+
+
+div.innerHTML = `
+
+${escapeHtml(m.body)}
+
+<span class="messageTime">
+
+${new Date(
+m.createdAt
+).toLocaleTimeString(
+[],
+{
+hour:"2-digit",
+minute:"2-digit"
+}
+)}
+
+</span>
+
+`;
+
+
+messages.appendChild(div);
+
+});
+
+
+messages.scrollTop =
+messages.scrollHeight;
+
+}
+
+);
+
+}
+
+
+/* SEND MESSAGE */
+
+$("sendBtn").onclick =
+sendMessage;
+
+
+$("messageInput")
+.addEventListener(
+"keydown",
+e => {
+
+if(e.key === "Enter"){
+
+e.preventDefault();
+
+sendMessage();
+
+}
+
+}
+);
+
+
+async function sendMessage(){
+
+if(!currentChatUser)
+return;
+
+
+const body =
+$("messageInput")
+.value
+.trim();
+
+
+if(!body)
+return;
+
+
+if(body.length > 5000)
+return;
+
+
+const key =
+chatKey(
+currentUser.uid,
+currentChatUser.uid
+);
+
+
+const messageRef =
+push(
+ref(
+db,
+"messages/"+key
+)
+);
+
+
+const now =
+Date.now();
+
+
+const updates = {};
+
+
+updates[
+"messages/" +
+key +
+"/" +
+messageRef.key
+] = {
+
+senderId:
+currentUser.uid,
+
+receiverId:
+currentChatUser.uid,
+
+body:
+body,
+
+createdAt:
+now
+
+};
+
+
+/* ЧАТ ПОЯВЛЯЕТСЯ У ОТПРАВИТЕЛЯ */
+
+updates[
+"contacts/" +
+currentUser.uid +
+"/" +
+currentChatUser.uid
+] = {
+
+otherUid:
+currentChatUser.uid,
+
+createdAt:
+now
+
+};
+
+
+/* ЧАТ ПОЯВЛЯЕТСЯ У ПОЛУЧАТЕЛЯ */
+
+updates[
+"contacts/" +
+currentChatUser.uid +
+"/" +
+currentUser.uid
+] = {
+
+otherUid:
+currentUser.uid,
+
+createdAt:
+now
+
+};
+
+
+try{
+
+await update(
+ref(db),
+updates
+);
+
+
+$("messageInput")
+.value = "";
+
+
+}catch(e){
+
+alert(
+"Не удалось отправить сообщение: " +
+e.message
+);
+
+}
+
+}
+
+
+/* PROFILE */
+
+$("profileBtn").onclick = () => {
+
+$("profileModal")
+.classList
+.remove("hidden");
+
+
+$("profileInfo").innerHTML = `
+
+<p>
+
+<b>
+@${escapeHtml(
+currentProfile.username
+)}
+</b>
+
+${currentProfile.verified
+? '<span class="verify"> ☑️</span>'
+: ''}
+
+</p>
+
+`;
+
+
+$("displayNameInput")
+.value =
+currentProfile.displayName;
+
+};
+
+
+$("closeProfileBtn").onclick =
+() => {
+
+$("profileModal")
+.classList
+.add("hidden");
+
+};
+
+
+$("saveProfileBtn").onclick =
+async () => {
+
+const name =
+$("displayNameInput")
+.value
+.trim();
+
+
+if(!name){
+
+$("profileError")
+.textContent =
+"Имя не может быть пустым.";
+
+return;
+
+}
+
+
+try{
+
+await update(
+
+ref(
+db,
+"profiles/"+currentUser.uid
+),
+
+{
+displayName:name
+}
+
+);
+
+
+await update(
+
+ref(
+db,
+"publicProfiles/"+currentUser.uid
+),
+
+{
+displayName:name
+}
+
+);
+
+
+currentProfile.displayName =
+name;
+
+
+$("profileError")
+.textContent =
+"Сохранено.";
+
+
+}catch(e){
+
+$("profileError")
+.textContent =
+e.message;
+
+}
+
+};
+
+
+/* PASSWORD */
+
+$("changePasswordBtn").onclick =
+async () => {
+
+const password =
+prompt(
+"Введите новый пароль:"
+);
+
+
+if(!password)
+return;
+
+
+if(password.length < 6){
+
+alert(
+"Пароль должен содержать минимум 6 символов."
+);
+
+return;
+
+}
+
+
+try{
+
+await updatePassword(
+auth,
+password
+);
+
+
+alert(
+"Пароль изменён."
+);
+
+
+}catch(e){
+
+alert(
+"Firebase требует повторного входа перед изменением пароля."
+);
+
+}
+
+};
+
+
+/* LOGOUT */
+
+$("logoutBtn").onclick =
+async () => {
+
+await signOut(auth);
+
+};
+
+
+/* ADMIN */
+
+$("adminBtn").onclick =
+() => {
+
+$("adminModal")
+.classList
+.remove("hidden");
+
+};
+
+
+$("closeAdminBtn").onclick =
+() => {
+
+$("adminModal")
+.classList
+.add("hidden");
+
+};
+
+
+$("adminSearchBtn").onclick =
+async () => {
+
+if(!isAdmin(currentProfile)){
+
+alert("Нет доступа.");
+
+return;
+
+}
+
+
+const username =
+cleanUsername(
+$("adminSearch").value
+);
+
+
+const uidSnap =
+await get(
+ref(
+db,
+"usernames/"+username
+)
+);
+
+
+if(!uidSnap.exists()){
+
+$("adminResult").innerHTML =
+"<p>Пользователь не найден.</p>";
+
+return;
+
+}
+
+
+const uid =
+uidSnap.val();
+
+
+const pSnap =
+await get(
+ref(
+db,
+"profiles/"+uid
+)
+);
+
+
+if(!pSnap.exists())
+return;
+
+
+const p =
+pSnap.val();
+
+
+$("adminResult").innerHTML = `
+
+<div class="adminUser">
+
+<b>
+${escapeHtml(p.displayName)}
+</b>
+
+${p.verified
+? '<span class="verify"> ☑️</span>'
+: ''}
+
+<br>
+
+<small>
+@${escapeHtml(p.username)}
+</small>
+
+
+<div class="adminActions">
+
+<button
+class="green"
+id="verifyUserBtn"
+>
+
+${p.verified
+? "Убрать ☑️"
+: "Дать ☑️"}
+
+</button>
+
+
+<button
+class="red"
+id="banUserBtn"
+>
+
+${p.banned
+? "Разбанить"
+: "Заблокировать"}
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+
+$("verifyUserBtn").onclick =
+async () => {
+
+try{
+
+const verified =
+!p.verified;
+
+
+await update(
+
+ref(
+db,
+"profiles/"+uid
+),
+
+{
+verified:verified
+}
+
+);
+
+
+await update(
+
+ref(
+db,
+"publicProfiles/"+uid
+),
+
+{
+verified:verified
+}
+
+);
+
+
+alert("Готово.");
+
+
+}catch(e){
+
+alert(
+"Firebase не разрешил действие: " +
+e.message
+);
+
+}
+
+};
+
+
+$("banUserBtn").onclick =
+async () => {
+
+if(uid === currentUser.uid){
+
+alert(
+"Нельзя заблокировать самого себя."
+);
+
+return;
+
+}
+
+
+try{
+
+const banned =
+!p.banned;
+
+
+await update(
+
+ref(
+db,
+"profiles/"+uid
+),
+
+{
+banned:banned
+}
+
+);
+
+
+alert(
+banned
+? "Пользователь заблокирован."
+: "Пользователь разблокирован."
+);
+
+
+}catch(e){
+
+alert(
+"Firebase не разрешил действие: " +
+e.message
+);
+
+}
+
+};
+
+};
+
+
+/* MOBILE */
+
+$("chatTitle").onclick =
+() => {
+
+if(window.innerWidth <= 700){
+
+$("sidebar")
+.classList
+.remove("hidden");
+
+$("chat")
+.classList
+.remove("mobile-open");
+
+}
+
+};
+
+</script>
+
+</body>
+</html>
